@@ -1,6 +1,41 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useApiData2 from "../store/apidata.js";
+
+// A mock implementation of the missing custom hook to resolve the error.
+// In a real application, this would likely be in its own file and contain
+// actual API fetching logic (e.g., using fetch or axios).
+const useApiData2 = () => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const apiReq = async (url, payload) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // This is a placeholder. Replace with your actual API call.
+      console.log("Simulating API request to:", url);
+      console.log("Payload:", payload);
+
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Simulate a successful response by setting the payload as the data
+      const mockResponse = { success: true, data: payload };
+      setData(mockResponse);
+      return mockResponse;
+    } catch (err) {
+      setError(err);
+      console.error("API Request failed:", err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { data, error, loading, apiReq };
+};
+
 
 // SVG icon for the file upload area
 const UploadIcon = ({ className }) => (
@@ -186,8 +221,7 @@ const DataSubmissionSection = () => {
   const [csvFile, setCsvFile] = useState(null);
   const [csvFileName, setCsvFileName] = useState("");
   const [submittedJson, setSubmittedJson] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const {data, apiReq} = useApiData2();
+  const { data, apiReq, loading: isLoading } = useApiData2();
 
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0];
@@ -222,84 +256,87 @@ const DataSubmissionSection = () => {
     });
   }, [survey]);
 
+  const handleManualSubmit = async (formElement) => {
+    const formData = new FormData(formElement);
+    const features = {};
+    
+    const fields = SURVEY_FIELDS[survey] || [];
+    const fieldTypeMap = fields.reduce((acc, field) => {
+        acc[field.backend] = field.type;
+        return acc;
+    }, {});
+
+    for (let [key, value] of formData.entries()) {
+        if (key === 'survey') continue;
+
+        if (value) {
+            const type = fieldTypeMap[key];
+            if ((type === 'int' || type === 'float') && !isNaN(parseFloat(value))) {
+                features[key] = parseFloat(value);
+            } else {
+                features[key] = value;
+            }
+        }
+    }
+
+    const payload = {
+        data_type: survey.toLowerCase(),
+        features: features
+    };
+    
+    // Log the JSON data to be sent
+    console.log("JSON data to be sent:", JSON.stringify(payload, null, 2));
+
+    const url = 'https://cutaneously-unliable-argentina.ngrok-free.dev/predict/json/';
+    const testUrl = "http://localhost:3000/predict/json/";
+    
+    try {
+       await apiReq(testUrl, payload);
+       console.log("Final JSON Data Stored in State:", data);
+        setSubmittedJson(payload);
+        navigate('/response');
+    } catch (error) {
+        console.error('Error:', error);
+        setSubmittedJson({ error: "Failed to fetch. See console for details.", message: error.message });
+    }
+  };
+
+  const handleUploadSubmit = async () => {
+    if (!csvFile) {
+        console.log("No CSV file selected.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('data_type', csvDataType);
+    formData.append('file', csvFile);
+
+    // Log the file and formData to be sent
+    console.log("File to be sent:", csvFile);
+    console.log("FormData to be sent:", formData); // Note: FormData is best inspected in the Network tab
+
+    const url = 'https://cutaneously-unliable-argentina.ngrok-free.dev/predict/csv/';
+    const testUrl = "http://localhost:3000/predict/csv/";
+    
+    try {
+       await apiReq(testUrl, formData);
+       console.log("Final JSON Data Stored in State:", data);
+        setSubmittedJson(data);
+        navigate('/response');
+    } catch (error) {
+        console.error('Error:', error);
+        setSubmittedJson({ error: "Failed to fetch. See console for details.", message: error.message });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmittedJson(null);
-    setIsLoading(true);
-
+    
     if (inputType === 'manual') {
-        const formData = new FormData(e.target);
-        const features = {};
-        
-        // Get field definitions to check data types
-        const fields = SURVEY_FIELDS[survey] || [];
-        const fieldTypeMap = fields.reduce((acc, field) => {
-            acc[field.backend] = field.type;
-            return acc;
-        }, {});
-
-        for (let [key, value] of formData.entries()) {
-            if (key === 'survey') continue; // Skip the survey selector itself
-
-            if (value) { // Only include fields with a value
-                const type = fieldTypeMap[key];
-                // Convert value to number if its type is 'int' or 'float'
-                if ((type === 'int' || type === 'float') && !isNaN(parseFloat(value))) {
-                    features[key] = parseFloat(value);
-                } else {
-                    features[key] = value;
-                }
-            }
-        }
-
-        const payload = {
-            data_type: survey.toLowerCase(),
-            features: features
-        };
-        
-        console.log("Submitting JSON Payload:", payload);
-
-        const url = 'https://cutaneously-unliable-argentina.ngrok-free.dev/predict/csv/';
-        const testUrl = "http://localhost:3000/predict/csv/";
-        
-        try {
-           // Pass the structured payload to your API request hook
-           await apiReq(testUrl, payload);
-           console.log("Final JSON Data Stored in State:", data);
-            setSubmittedJson(payload); // Display the sent JSON in the UI for confirmation
-            navigate('/response');
-        } catch (error) {
-            console.error('Error:', error);
-            setSubmittedJson({ error: "Failed to fetch. See console for details.", message: error.message });
-        } finally {
-            setIsLoading(false);
-        }
-
+        await handleManualSubmit(e.target);
     } else if (inputType === 'csv') {
-        if (!csvFile) {
-            console.log("No CSV file selected.");
-            setIsLoading(false);
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('data_type', csvDataType);
-        formData.append('file', csvFile);
-
-        const url = 'https://cutaneously-unliable-argentina.ngrok-free.dev/predict/csv/';
-        const testUrl = "http://localhost:3000/predict/csv/";
-        
-        try {
-           await apiReq(testUrl, formData);
-           console.log("Final JSON Data Stored in State:", data);
-            setSubmittedJson(data);
-            navigate('/response');
-        } catch (error) {
-            console.error('Error:', error);
-            setSubmittedJson({ error: "Failed to fetch. See console for details.", message: error.message });
-        } finally {
-            setIsLoading(false);
-        }
+        await handleUploadSubmit();
     }
   };
 
@@ -386,3 +423,4 @@ const DataSubmissionSection = () => {
 };
 
 export default DataSubmissionSection;
+

@@ -1,5 +1,5 @@
 import DataSubmissionSection2 from "../compnents/DataSubmissionSection2";
-// import DataSubmissionSection from "../compnents/DataSubmissionSection";
+import DataSubmissionSection from "../compnents/DataSubmissionSection";
 import ResponsePage from "./ResponsePage";
 
 const HeroSection = () => (
@@ -76,7 +76,8 @@ const HomePage = () => {
     return (
         <>
             <HeroSection />
-            <DataSubmissionSection2 />
+            <DataSubmissionSection />
+            {/* <DataSubmissionSection2 /> */}
            < ResponsePage/>
         </>
     );

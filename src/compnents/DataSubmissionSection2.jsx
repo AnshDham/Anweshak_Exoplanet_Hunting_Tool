@@ -70,6 +70,8 @@ const DataSubmissionSection2 = () => {
   
   const isSubmitDisabled = (inputType === 'csv' && !csvFile) || isLoading;
 
+  console.log("Submitted JSON:", submittedJson);
+
   return (
     <section id="find-planet" className="py-20 bg-slate-900 min-h-screen">
       <div className="container mx-auto px-4 sm:px-6">
