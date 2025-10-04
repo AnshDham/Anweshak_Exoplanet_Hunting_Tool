@@ -1,52 +1,55 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useApiData from "../store/apidata";
 
 // This hook now uses the browser's `fetch` API to make real network requests.
-const useApiData2 = () => {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+// const useApiData = () => {
+//   const [data, setData] = useState(null);
+//   const [error, setError] = useState(null);
+//   const [loading, setLoading] = useState(false);
 
-  const apiReq = async (url, payload) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const isFormData = payload instanceof FormData;
+//   const apiReq = async (url, payload) => {
+//     // setLoading(true);
+//     // setError(null);
+//     try {
+//       const isFormData = payload instanceof FormData;
 
-      // Use the fetch API to make a POST request
-      const response = await fetch(url, {
-        method: 'POST',
-        // Don't set Content-Type for FormData, the browser does it automatically.
-        // For JSON, we explicitly set the Content-Type header.
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' },
-        body: isFormData ? payload : JSON.stringify(payload),
-      });
+//       // Use the fetch API to make a POST request
+//       const response = await fetch(url, {
+//         method: 'POST',
+//         // Don't set Content-Type for FormData, the browser does it automatically.
+//         // For JSON, we explicitly set the Content-Type header.
+//         headers: isFormData ? {} : { 'Content-Type': 'application/json' },
+//         body: isFormData ? payload : JSON.stringify(payload),
+//       });
 
-      // Handle non-successful HTTP responses
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API request failed with status ${response.status}: ${errorText}`);
-      }
+//       // Handle non-successful HTTP responses
+//       if (!response.ok) {
+//         const errorText = await response.text();
+//         throw new Error(`API request failed with status ${response.status}: ${errorText}`);
+//       }
       
-      // Parse the JSON response from the API
-      const responseData = await response.json();
+//       // Parse the JSON response from the API
+//       const responseData = await response.json();
       
-      console.log("API response received:", responseData);
-      setData(responseData);
-      return responseData;
+//       console.log("API response received:", responseData);
+//       // setData(responseData);
+//       return responseData;
 
-    } catch (err) {
-      setError(err);
-      console.error("API Request failed:", err);
-      // We re-throw the error so the calling function can handle it if needed
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+//     } catch (err) {
+//       // setError(err);
+//       console.error("API Request failed:", err);
+//       // We re-throw the error so the calling function can handle it if needed
+//       throw err;
+//     } finally {
+//       // setLoading(false);
+//     }
+//   };
 
-  return { data, error, loading, apiReq };
-};
+//   return { data, error, loading, apiReq };
+// };
+
+
 
 // Sample data for the "Load Sample Data" button
 const SAMPLE_DATA = {
@@ -360,7 +363,7 @@ const DataSubmissionSection = () => {
   const [csvFile, setCsvFile] = useState(null);
   const [csvFileName, setCsvFileName] = useState("");
   const [submittedJson, setSubmittedJson] = useState(null);
-  const { data, apiReq, loading: isLoading } = useApiData2();
+  const { data, apiReq, loading: isLoading } = useApiData();
 
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0];

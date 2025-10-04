@@ -1,33 +1,43 @@
 import {create} from "zustand";
 
-const useApiData2 = create((set) => ({
-    data: [],
-    isResponese: false,
+const useApiData = create((set) => ({
+    data: null,
+    loading: false,
+    error: null,
+    isResponse: false,
 
-    apiReq: async (url, formData) => {
+    apiReq: async (url, payload) => {
+        // Reset state before a new request
+        set({ loading: true, error: null, isResponse: false, data: null });
         try {
+            const isFormData = payload instanceof FormData;
+
             const response = await fetch(url, {
                 method: 'POST',
-                body: formData,
-                // Don't set Content-Type header when sending FormData
-                // The browser will set it automatically with the correct boundary
+                headers: isFormData ? {} : { 'Content-Type': 'application/json' },
+                body: isFormData ? payload : JSON.stringify(payload),
             });
-
+            
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // Use the error message from the API if available
+                throw new Error(result.message || `HTTP error! status: ${response.status}`);
             }
             
-            set({ isResponese: true });
-            set({ data: result.data || result });
-            console.log("data", result.data);
+            set({ data: result, isResponse: true });
+            console.log("Data stored in Zustand:", result);
             return result;
+
         } catch (error) {
             console.error('API Request Error:', error);
-            throw error;
+            set({ error: error });
+            // Re-throw the error so the component can catch it if needed
+            throw error; 
+        } finally {
+            set({ loading: false });
         }
     }
-}))
+}));
 
-export default useApiData2
+export default useApiData;
