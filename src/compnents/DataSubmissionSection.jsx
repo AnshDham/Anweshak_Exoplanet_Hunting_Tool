@@ -1,9 +1,9 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import useApiData from "../store/apidata";
+import useApiData from "../store/apidata";
 
 // This hook now uses the browser's `fetch` API to make real network requests.
-const useApiData = () => {
+const useApiData2 = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
