@@ -515,7 +515,7 @@ const DataSubmissionSection = () => {
     console.log("File to be sent:", csvFile);
     console.log("FormData to be sent:", formData); // Note: FormData is best inspected in the Network tab
 
-    const url = "https://cutaneously-unliable-argentina.ngrok-free.dev/predict/csv/";
+    const url = " https://fernanda-colloquial-semiallegorically.ngrok-free.dev/predict/demo/";
 
     try {
       const response = await apiReq(url, formData);
