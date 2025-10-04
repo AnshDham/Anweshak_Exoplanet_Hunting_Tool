@@ -21,6 +21,7 @@ const useApiData2 = create((set) => ({
             
             set({ isResponese: true });
             set({ data: result.data || result });
+            console.log("data", result.data);
             return result;
         } catch (error) {
             console.error('API Request Error:', error);
