@@ -7,21 +7,22 @@ const useApiData = create((set) => ({
     isResponse: false,
 
     apiReq: async (url, payload) => {
-        // Reset state before a new request
         set({ loading: true, error: null, isResponse: false, data: null });
         try {
             const isFormData = payload instanceof FormData;
 
             const response = await fetch(url, {
                 method: 'POST',
-                headers: isFormData ? {} : { 'Content-Type': 'application/json' },
+                headers: {
+                    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+                    'ngrok-skip-browser-warning': 'true',
+                },
                 body: isFormData ? payload : JSON.stringify(payload),
             });
             
             const result = await response.json();
 
             if (!response.ok) {
-                // Use the error message from the API if available
                 throw new Error(result.message || `HTTP error! status: ${response.status}`);
             }
             
@@ -32,7 +33,6 @@ const useApiData = create((set) => ({
         } catch (error) {
             console.error('API Request Error:', error);
             set({ error: error });
-            // Re-throw the error so the component can catch it if needed
             throw error; 
         } finally {
             set({ loading: false });

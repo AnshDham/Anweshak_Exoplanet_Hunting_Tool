@@ -502,33 +502,25 @@ const DataSubmissionSection = () => {
   };
 
   const handleUploadSubmit = async () => {
-    if (!csvFile) {
-      console.log("No CSV file selected.");
-      return;
-    }
+  if (!csvFile) {
+    alert("Please select a CSV file");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("data_type", csvDataType);
-    formData.append("file", csvFile);
+  const formData = new FormData();
+  formData.append("file", csvFile);
+  formData.append("type", "csv");
+  formData.append("data_type", csvDataType.toLowerCase());
 
-    // Log the file and formData to be sent
-    console.log("File to be sent:", csvFile);
-    console.log("FormData to be sent:", formData); // Note: FormData is best inspected in the Network tab
-
-    const url = " https://fernanda-colloquial-semiallegorically.ngrok-free.dev/predict/demo/";
-
-    try {
-      const response = await apiReq(url, formData);
-      console.log("API Response received:", response);
-      setSubmittedJson(response);
-    } catch (error) {
-      console.error("Error:", error);
-      setSubmittedJson({
-        error: "Failed to fetch. See console for details.",
-        message: error.message,
-      });
-    }
-  };
+  try {
+    // Remove trailing slash to match your server endpoint
+    const result = await apiReq("https://fernanda-colloquial-semiallegorically.ngrok-free.dev/predict/demo", formData);
+    setSubmittedJson(JSON.stringify(result, null, 2));
+  } catch (error) {
+    console.error("Upload failed:", error);
+    alert("Upload failed: " + error.message);
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
