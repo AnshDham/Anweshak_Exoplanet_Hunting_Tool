@@ -533,6 +533,21 @@ const DataSubmissionSection = () => {
     }
   };
 
+  const testConnection = async () => {
+  try {
+    const response = await fetch('https://fernanda-colloquial-semiallegorically.ngrok-free.dev/health', {
+      method: 'GET',
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+      },
+    });
+    const result = await response.json();
+    console.log('Health check result:', result);
+  } catch (error) {
+    console.error('Health check failed:', error);
+  }
+};
+
   const isSubmitDisabled = (inputType === "csv" && !csvFile) || isLoading;
 
   return (
@@ -582,6 +597,7 @@ const DataSubmissionSection = () => {
                 >
                   Upload CSV
                 </button>
+                <button onClick={testConnection}>Test Connection</button>
               </div>
             </div>
             {inputType === "manual" && (
