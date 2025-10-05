@@ -486,7 +486,7 @@ const DataSubmissionSection = () => {
     console.log("JSON data to be sent:", JSON.stringify(payload, null, 2));
 
     const url =
-      "https://cutaneously-unliable-argentina.ngrok-free.dev/predict/manual";
+      "https://anweshak-exoplanet-hunting-tool-y8w5.onrender.com/predict/manual";
 
     try {
       const response = await apiReq(url, payload);
@@ -514,7 +514,7 @@ const DataSubmissionSection = () => {
 
     try {
       // Remove trailing slash to match your server endpoint
-      const result = await apiReq(" https://cutaneously-unliable-argentina.ngrok-free.dev/predict/csv/", formData, csvDataType);
+      const result = await apiReq("https://anweshak-exoplanet-hunting-tool-y8w5.onrender.com/predict/csv/", formData, csvDataType);
       setSubmittedJson(result);
       navigate("/response");
     } catch (error) {
@@ -531,21 +531,6 @@ const DataSubmissionSection = () => {
       await handleManualSubmit(e.target);
     } else if (inputType === "csv") {
       await handleUploadSubmit();
-    }
-  };
-
-  const testConnection = async () => {
-    try {
-      const response = await fetch('https://fernanda-colloquial-semiallegorically.ngrok-free.dev/health', {
-        method: 'GET',
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
-      });
-      const result = await response.json();
-      console.log('Health check result:', result);
-    } catch (error) {
-      console.error('Health check failed:', error);
     }
   };
 
@@ -597,13 +582,6 @@ const DataSubmissionSection = () => {
                   }`}
                 >
                   Upload CSV
-                </button>
-                <button 
-                  type="button"
-                  onClick={testConnection}
-                  className="ml-2 px-4 py-2 bg-slate-700 text-cyan-300 hover:bg-slate-600 rounded-md text-sm font-bold transition-colors"
-                >
-                  Test Connection
                 </button>
               </div>
             </div>
