@@ -5,8 +5,9 @@ const useApiData = create((set) => ({
     loading: false,
     error: null,
     isResponse: false,
+    csvType: null,
 
-    apiReq: async (url, payload) => {
+    apiReq: async (url, payload, csvDataType) => {
         set({ loading: true, error: null, isResponse: false, data: null });
         try {
             const isFormData = payload instanceof FormData;
@@ -26,7 +27,8 @@ const useApiData = create((set) => ({
                 throw new Error(result.message || `HTTP error! status: ${response.status}`);
             }
             
-            set({ data: result, isResponse: true });
+            set({ data: result.data, isResponse: true });
+            set({ csvType: csvDataType });
             console.log("Data stored in Zustand:", result);
             return result;
 

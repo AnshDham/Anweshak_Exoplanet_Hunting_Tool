@@ -9,6 +9,8 @@ import Footer from './compnents/Footer';
 import DataSubmissionSection from "./compnents/DataSubmissionSection";
 import ResponsePage from './pages/ResponsePage';
 import  useApiData2  from './store/apidata.js';
+import FaqChat from './compnents/FaqChat.jsx';
+import TeamSection from './compnents/TeamSection.jsx';
 
 const HeroSection = () => (
     <section className="relative h-screen flex items-center justify-center text-center overflow-hidden pt-20">
@@ -100,6 +102,8 @@ function App () {
                     <Route path="/" element={<HomePage/>} />
                     <Route path="/response" element={<ResponsePage/>} />
                     <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="/faq" element={<FaqChat/>} />
+                    <Route path="/aboutUs" element={<TeamSection/>}/>
                 </Routes>
             </main>
             <Footer />

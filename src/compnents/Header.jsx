@@ -64,18 +64,17 @@ const Header = () => {
 
     // When using React Router, you would replace <Link> with <Link> from 'react-router-dom'
     const navLinks = [
-        { to: "/", text: "Home", icon: <HomeIcon className="w-5 h-5" />, isLink: true },
+        { to: "home", text: "Home", icon: <HomeIcon className="w-5 h-5" />, isLink: true },
         { to: "find-planet", text: "Find Planet", icon: <RocketIcon className="w-5 h-5" />, isLink: false },
-        { to: "#", text: "Contact Us", icon: <MailIcon className="w-5 h-5" />, isLink: true },
-        { to: "#", text: "Know Us", icon: <InfoIcon className="w-5 h-5" />, isLink: true },
-        { to: "#", text: "Profile", icon: <UserIcon className="w-5 h-5" />, isLink: true },
+        { to: "/aboutUs", text: "Know Us", icon: <InfoIcon className="w-5 h-5" />, isLink: true },
+        { to: "/faq", text: "faq", icon: <UserIcon className="w-5 h-5" />, isLink: true },
     ];
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md">
             <div className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <Link to="#" className="text-2xl font-bold text-white tracking-wider font-orbitron">
-                    <span className="text-cyan-400">COSMIC</span>VOYAGER
+                    <span className="text-cyan-400">ANWE</span>SHAK
                 </Link>
                 <nav className="hidden md:flex items-center space-x-8">
                     {navLinks.map((link) => (

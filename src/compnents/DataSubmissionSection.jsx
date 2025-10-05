@@ -266,7 +266,7 @@ const SURVEY_FIELDS = {
       ],
       KOI: [
         { "backend": "koi_pdisposition", "csv": "Disposition Using Kepler Data", "type": "string" },
-        { "backend": "koi score", "csv": "Disposition Score", "type": "float" },
+        { "backend": "koi_score", "csv": "Disposition Score", "type": "float" },
         { "backend": "koi_fpflag_ss", "csv": "Stellar Eclipse False Positive Flag", "type": "int" },
         { "backend": "koi_fpflag_co", "csv": "Centroid Offset False Positive Flag", "type": "int" },
         { "backend": "koi_fpflag_ec", "csv": "Ephemeris Match Indicates Contamination False Positive Flag", "type": "int" },
@@ -290,9 +290,9 @@ const SURVEY_FIELDS = {
         { "backend": "koi_insol", "csv": "Insolation Flux [Earth flux]", "type": "float" },
         { "backend": "koi_insol_err1", "csv": "Insolation Flux [positive (+ve) Error]", "type": "float" },
         { "backend": "koi_insol_err2", "csv": "Insolation Flux [negative (-ve) Error]", "type": "float" },
-        { "backend": "koi model snr", "csv": "Transit Signal-to-Noise", "type": "float" },
+        { "backend": "koi_model_snr", "csv": "Transit Signal-to-Noise", "type": "float" },
         { "backend": "koi_tce_plnt_num", "csv": "TCE Planet Number", "type": "int" },
-        { "backend": "koi tce delivname", "csv": "TCE Delivery Name", "type": "String" },
+        { "backend": "koi_tce_delivname", "csv": "TCE Delivery Name", "type": "string" },
         { "backend": "koi_steff", "csv": "Stellar Effective Temperature (Kelvin)", "type": "float" },
         { "backend": "koi_steff_err1", "csv": "Stellar Effective Temperature [positive (+ve) Error]", "type": "float" },
         { "backend": "koi_steff_err2", "csv": "Stellar Effective Temperature [negative (-ve) Error]", "type": "float" },
@@ -359,7 +359,7 @@ const DataSubmissionSection = () => {
   const [csvFile, setCsvFile] = useState(null);
   const [csvFileName, setCsvFileName] = useState("");
   const [submittedJson, setSubmittedJson] = useState(null);
-  const { data, apiReq, loading: isLoading } = useApiData();
+  const { data, apiReq, loading: isLoading, csvType } = useApiData();
 
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0];
@@ -502,25 +502,26 @@ const DataSubmissionSection = () => {
   };
 
   const handleUploadSubmit = async () => {
-  if (!csvFile) {
-    alert("Please select a CSV file");
-    return;
-  }
+    if (!csvFile) {
+      alert("Please select a CSV file");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("file", csvFile);
-  formData.append("type", "csv");
-  formData.append("data_type", csvDataType.toLowerCase());
+    const formData = new FormData();
+    formData.append("file", csvFile);
+    formData.append("type", "csv");
+    formData.append("data_type", csvDataType.toLowerCase());
 
-  try {
-    // Remove trailing slash to match your server endpoint
-    const result = await apiReq("https://fernanda-colloquial-semiallegorically.ngrok-free.dev/predict/demo", formData);
-    setSubmittedJson(JSON.stringify(result, null, 2));
-  } catch (error) {
-    console.error("Upload failed:", error);
-    alert("Upload failed: " + error.message);
-  }
-};
+    try {
+      // Remove trailing slash to match your server endpoint
+      const result = await apiReq("https://fernanda-colloquial-semiallegorically.ngrok-free.dev/predict/demo", formData, csvDataType);
+      setSubmittedJson(result);
+      navigate("/response");
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Upload failed: " + error.message);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -534,19 +535,19 @@ const DataSubmissionSection = () => {
   };
 
   const testConnection = async () => {
-  try {
-    const response = await fetch('https://fernanda-colloquial-semiallegorically.ngrok-free.dev/health', {
-      method: 'GET',
-      headers: {
-        'ngrok-skip-browser-warning': 'true',
-      },
-    });
-    const result = await response.json();
-    console.log('Health check result:', result);
-  } catch (error) {
-    console.error('Health check failed:', error);
-  }
-};
+    try {
+      const response = await fetch('https://fernanda-colloquial-semiallegorically.ngrok-free.dev/health', {
+        method: 'GET',
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      });
+      const result = await response.json();
+      console.log('Health check result:', result);
+    } catch (error) {
+      console.error('Health check failed:', error);
+    }
+  };
 
   const isSubmitDisabled = (inputType === "csv" && !csvFile) || isLoading;
 
@@ -575,7 +576,7 @@ const DataSubmissionSection = () => {
                     setInputType("manual");
                     setSubmittedJson(null);
                   }}
-                  className={`w-1/2 py-2 rounded-md transition-colors text-sm font-bold ${
+                  className={`flex-1 py-2 rounded-md transition-colors text-sm font-bold ${
                     inputType === "manual"
                       ? "bg-cyan-500 text-slate-900 shadow"
                       : "text-gray-300 hover:bg-slate-700"
@@ -589,7 +590,7 @@ const DataSubmissionSection = () => {
                     setInputType("csv");
                     setSubmittedJson(null);
                   }}
-                  className={`w-1/2 py-2 rounded-md transition-colors text-sm font-bold ${
+                  className={`flex-1 py-2 rounded-md transition-colors text-sm font-bold ${
                     inputType === "csv"
                       ? "bg-cyan-500 text-slate-900 shadow"
                       : "text-gray-300 hover:bg-slate-700"
@@ -597,7 +598,13 @@ const DataSubmissionSection = () => {
                 >
                   Upload CSV
                 </button>
-                <button onClick={testConnection}>Test Connection</button>
+                <button 
+                  type="button"
+                  onClick={testConnection}
+                  className="ml-2 px-4 py-2 bg-slate-700 text-cyan-300 hover:bg-slate-600 rounded-md text-sm font-bold transition-colors"
+                >
+                  Test Connection
+                </button>
               </div>
             </div>
             {inputType === "manual" && (
@@ -690,18 +697,19 @@ const DataSubmissionSection = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="mb-8">
                   <label className="block text-xl text-cyan-300 font-semibold mb-3">
                     3. Upload CSV File
                   </label>
 
-                  <div className="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-600 border-dashed rounded-md">
+                  <div className="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-600 border-dashed rounded-md hover:border-cyan-500 transition-colors">
                     <div className="space-y-1 text-center">
                       <UploadIcon className="mx-auto h-12 w-12 text-slate-500" />
                       <div className="flex text-sm text-gray-400 justify-center items-center">
                         <label
                           htmlFor="file-upload"
-                          className="relative cursor-pointer bg-slate-700 rounded-md font-medium text-cyan-400 hover:text-cyan-300 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-slate-800 focus-within:ring-cyan-500 px-3 py-2"
+                          className="relative cursor-pointer bg-slate-700 rounded-md font-medium text-cyan-400 hover:text-cyan-300 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-slate-800 focus-within:ring-cyan-500 px-3 py-2 transition-colors"
                         >
                           <span>
                             {csvFileName
@@ -712,8 +720,7 @@ const DataSubmissionSection = () => {
                             id="file-upload"
                             name="file-upload"
                             type="file"
-                            className="sr-only"
-                            accept=".csv, text/csv"
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             onChange={handleFileChange}
                           />
                         </label>
@@ -724,15 +731,33 @@ const DataSubmissionSection = () => {
                       <p className="text-xs text-gray-500">CSV up to 10MB</p>
                     </div>
                   </div>
+                  
                   {csvFileName && (
                     <div className="mt-4 text-center text-green-400 bg-green-900/50 border border-green-700 rounded-md py-2 px-4">
                       <p className="text-sm">
                         File ready:{" "}
                         <span className="font-semibold">{csvFileName}</span>
                       </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCsvFile(null);
+                          setCsvFileName("");
+                          // Clear the file input value
+                          const fileInput = document.getElementById('file-upload');
+                          if (fileInput) {
+                            fileInput.value = "";
+                          }
+                        }}
+                        className="mt-2 px-3 py-1 text-xs bg-red-600 text-white hover:bg-red-700 rounded-md transition-colors font-semibold"
+                      >
+                        Remove File
+                      </button>
                     </div>
                   )}
                 </div>
+
+
               </>
             )}
 
@@ -776,10 +801,6 @@ const DataSubmissionSection = () => {
                     {submittedJson.message && (
                       <p className="text-green-400">{submittedJson.message}</p>
                     )}
-                    <p className="text-gray-400 text-sm mt-2">
-                      Note: The full API response has been logged to the
-                      developer console.
-                    </p>
                   </div>
                 )}
               </div>
