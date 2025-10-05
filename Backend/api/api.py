@@ -16,7 +16,7 @@ import yaml
 from src.handelling_missing_values import Impute
 from src.preprocessing import PreprocessingFactory
 from fastapi.middleware.cors import CORSMiddleware
-project_root = r"C:\Users\rk186\OneDrive\Desktop\NASA_challenge_2025"
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config_path = os.path.join(project_root, "config.yaml")
 model_dir=os.path.join(project_root, 'models')
 with open(config_path, 'r') as file:
@@ -219,3 +219,4 @@ async def predict_csv(data_type:str=Form(...),
             "Community TESS Object of Interest Alias":df_tess_col_name["ctoi_alias"].tolist(),
             "Prediction":result_tess
         }
+
