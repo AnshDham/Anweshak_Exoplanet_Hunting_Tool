@@ -11,7 +11,7 @@ const qaData = {
         { q: "Where can I download the KOI dataset?", a: "The official source is the <strong>NASA Exoplanet Archive</strong>. The data is available in user-friendly formats like CSV.<br><br>➡️ <a href='https://exoplanetarchive.ipac.caltech.edu/docs/data.html' target='_blank' class='text-sky-400 hover:underline'>NASA Exoplanet Archive - Kepler Data</a>" },
     ],
     'tess': [
-        { q: "What is the TESS TOI dataset?", a: "The TESS Objects of Interest (TOI) dataset is a public catalog from NASA listing <strong>potential exoplanet candidates</strong> found by the Transiting Exoplanet Survey Satellite (TESS). It’s a modern collection of possible new worlds orbiting stars close to us. 🛰️" },
+        { q: "What is the TESS TOI dataset?", a: "The TESS Objects of Interest (TOI) dataset is a public catalog from NASA listing <strong>potential exoplanet candidates</strong> found by the Transiting Exoplanet Survey Satellite (TESS). It's a modern collection of possible new worlds orbiting stars close to us. 🛰️" },
         { q: "How is TESS different from Kepler?", a: "While both use the <strong>transit method</strong>, their strategies differ:<ul><li><strong>Kepler:</strong> Stared at one small patch of the sky.</li><li><strong>TESS:</strong> Scans almost the entire sky, focusing on the <strong>brightest and nearest stars</strong>.</li></ul>" },
         { q: "What kind of data will I find in the TESS dataset?", a: "The TOI catalog includes many parameters, such as:<ul><li><code>toi_id</code>: The unique identifier for the TOI.</li><li><code>tfopwg_disp</code>: The official disposition (Confirmed, Candidate, etc.).</li><li><code>pl_orbper</code>: The orbital period in Earth days.</li><li><code>pl_rade</code>: The radius of the planet.</li></ul>" },
         { q: "Where can I get the TESS data?", a: "The best place to get the latest version is the <strong>NASA Exoplanet Archive</strong>, typically in a simple CSV format.<br><br>➡️ <a href='https://exoplanetarchive.ipac.caltech.edu/docs/data.html' target='_blank' class='text-sky-400 hover:underline'>NASA Exoplanet Archive - TESS Data</a>" },
@@ -82,11 +82,11 @@ const FaqChat = () => {
 
     return (
         // Main container with background image and blur
-        <div className="fixed inset-0 flex items-center justify-center p-4 bg-cover bg-center" style={{ backgroundImage: "url(./public/1.jpeg)" }}>
+        <div className="fixed inset-0 flex items-center justify-center p-4 bg-cover bg-center" style={{ backgroundImage: "url('./public/1.jpeg')" }}>
             <div className="absolute inset-0 backdrop-blur-md"></div>
             
             {/* Chat Wrapper with Glassmorphism Effect */}
-            <div className="relative w-full max-w-lg h-[85vh] max-h-[700px] bg-gradient-to-br from-sky-500/20 to-fuchsia-700/20 p-1 rounded-3xl border border-sky-500/40 shadow-2xl">
+            <div className="relative w-full max-w-lg h-[80vh] max-h-[700px] bg-gradient-to-br from-sky-500/20 to-fuchsia-700/20 p-1 rounded-3xl border border-sky-500/40 shadow-2xl">
                 
                 {/* Main Chat Container */}
                 <div className="w-full h-full bg-[#000022] text-gray-200 rounded-2xl flex flex-col overflow-hidden shadow-inner shadow-black/40">

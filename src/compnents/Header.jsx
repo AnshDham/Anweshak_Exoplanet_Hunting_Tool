@@ -67,7 +67,7 @@ const Header = () => {
         { to: "home", text: "Home", icon: <HomeIcon className="w-5 h-5" />, isLink: true },
         { to: "find-planet", text: "Find Planet", icon: <RocketIcon className="w-5 h-5" />, isLink: false },
         { to: "/aboutUs", text: "Know Us", icon: <InfoIcon className="w-5 h-5" />, isLink: true },
-        { to: "/faq", text: "faq", icon: <UserIcon className="w-5 h-5" />, isLink: true },
+        { to: "/faq", text: "FAQ", icon: <UserIcon className="w-5 h-5" />, isLink: true },
     ];
 
     return (
