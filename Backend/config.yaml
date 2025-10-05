@@ -1,0 +1,66 @@
+missing:
+  percentage : 45
+k2_data:
+  remove_col: ["pl_name","hostname","disp_refname","discoverymethod","default_flag","pl_controv_flag","pl_radelim","pl_orbperlim","st_tefflim","st_radlim","st_logg","st_logglim","sy_vmagerr1","sy_vmagerr2","pl_radjlim","pl_bmassprov","st_spectype","st_metratio","disc_year","disc_facility","pl_refname","st_refname","sy_refname","rastr","decstr","rowupdate","pl_pubdate","releasedate"]
+  target_col: "disposition"
+  map_values: {"CONFIRMED": 1,"FALSE POSITIVE": 0,"CANDIDATE": 2, "REFUTED":0}
+model_params:
+  random_forest:
+    random_state: 42
+    class_weight: "balanced"
+    n_estimators: 200
+data_splitter:
+  test_size: 0.2
+  random_state: 42
+
+koi_data:
+  remove_columns : ["kepid","kepoi_name","kepler_name","koi_teq_err1","koi_teq_err2","koi_fpflag_nt","koi_impact_err1","koi_impact_err2"]
+  target_column : "koi_disposition"
+  target_map_values : {"CONFIRMED": 1, "FALSE POSITIVE": 0, "CANDIDATE": 2}
+  pdistribution : "koi_pdisposition"
+  pdis_map : {"FALSE POSITIVE":0,"CANDIDATE":2}
+  koi_tce_delivname : "koi_tce_delivname"
+  koi_tce_delivname_map : {"q1_q17_dr25_tce":0,"q1_q16_tce":1,"q1_q17_dr24_tce":2}
+
+stacking_model:
+    random_forest :
+        random_state: 42
+        class_weight: "balanced"
+        n_estimators: 200
+        max_depth: 10
+        min_samples_split: 20
+        min_samples_leaf: 5
+        max_features: "sqrt"
+    decision_tree:
+        random_state: 42
+        class_weight: "balanced"
+        max_depth: 15
+        min_samples_leaf: 10
+        min_samples_split: 20
+        max_features: "sqrt"
+    lightgbm:
+      class_weight : "balanced"
+      random_state: 42
+      n_estimators: 1000
+      learning_rate: 0.05
+      max_depth: 7
+      min_child_samples: 20
+      subsample: 0.8
+      colsample_bytree: 0.8
+      reg_alpha: 0.1
+      reg_lambda: 0.1
+    logistic_regression:
+        random_state: 42
+        class_weight: "balanced"
+        max_iter: 1000
+        C: 1.0
+        penalty: "l2"
+tess_data:
+  remove_columns : ["rowid","toi","st_pmralim","st_pmrasymerr","st_pmdeclim","st_pmdecsymerr","pl_tranmidlim","pl_tranmidsymerr","pl_orbperlim","pl_orbpersymerr","pl_trandurhlim","pl_trandurhsymerr","pl_trandeplim","pl_trandepsymerr","pl_radelim","pl_radesymerr","st_tmaglim",
+    "st_tmagsymerr","st_distlim","st_distsymerr","st_tefflim","st_teffsymerr","st_logglim","st_loggsymerr","st_radlim","st_radsymerr","toipfx","tid","ctoi_alias","pl_pnum","rastr","decstr","toi_created","rowupdate"]
+  target_column : "tfopwg_disp"
+  target_map_values : {"FP":0,"PC":2,"KP":1,"APC":0,"FA":0,"CP":1}
+
+deeplearning:
+  epoch : 50
+  patient : 5
