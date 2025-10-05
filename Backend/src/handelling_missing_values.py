@@ -3,7 +3,7 @@ from abc import ABC,abstractmethod
 import yaml
 import os
 import sys
-project_root = r"C:\Users\rk186\OneDrive\Desktop\NASA_challenge_2025"
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 config_path = os.path.join(project_root, "config.yaml")
 with open(config_path, 'r') as file:
     config = yaml.safe_load(file)
@@ -51,4 +51,5 @@ class Impute:
         return DropingStrategy()
     @staticmethod
     def handle_duplicates()->Handler:
+
         return HandellingDuplicates()
