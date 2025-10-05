@@ -57,7 +57,7 @@ const teamMembers = [
     {
         name: "Yash Devani",
         role: "Web Dev Specialist",
-        description: "Backend specialist, ensuring robust Firebase authentication and real-time data storage for user history.",
+        description: "Frontend lead, focused on creating the interactive user interface and responsive dashboard visualizations.",
         imageUrl: "./public/7.png",
         linkedinUrl: "https://www.linkedin.com/in/yash-devani-744297324?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
         theme: {
