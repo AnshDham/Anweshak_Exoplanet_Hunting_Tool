@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import DataSubmissionSection from "../compnents/DataSubmissionSection";
+import DataSubmissionSection from "../components/DataSubmissionSection";
 import ResponsePage from "./ResponsePage";
 import { Link } from "react-router-dom";
 

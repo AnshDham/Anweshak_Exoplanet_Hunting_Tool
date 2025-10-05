@@ -1,16 +1,11 @@
 
 import { Routes, Route, Navigate} from 'react-router-dom';
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-// import Layout from "./compnents/Layout";
-// import HomePage from "./pages/HomePage";
-import Header from './compnents/Header';
-import Footer from './compnents/Footer';
-import DataSubmissionSection from "./compnents/DataSubmissionSection";
+import Header from './components/Header';
+import Footer from './components/Footer';
+import DataSubmissionSection from "./components/DataSubmissionSection";
 import ResponsePage from './pages/ResponsePage';
-import  useApiData2  from './store/apidata.js';
-import FaqChat from './compnents/FaqChat.jsx';
-import TeamSection from './compnents/TeamSection.jsx';
+import FaqChat from './components/FaqChat.jsx';
+import TeamSection from './components/TeamSection.jsx';
 
 const HeroSection = () => (
     <section className="relative h-screen flex items-center justify-center text-center overflow-hidden pt-20">

@@ -1,53 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useApiData from "../store/apidata";
+import RocketLoader from './RocketLoader';
 
-// This hook now uses the browser's `fetch` API to make real network requests.
-const useApiData2 = () => {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const apiReq = async (url, payload) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const isFormData = payload instanceof FormData;
-
-      // Use the fetch API to make a POST request
-      const response = await fetch(url, {
-        method: 'POST',
-        // Don't set Content-Type for FormData, the browser does it automatically.
-        // For JSON, we explicitly set the Content-Type header.
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' },
-        body: isFormData ? payload : JSON.stringify(payload),
-      });
-
-      // Handle non-successful HTTP responses
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API request failed with status ${response.status}: ${errorText}`);
-      }
-
-      // Parse the JSON response from the API
-      const responseData = await response.json();
-
-      console.log("API response received:", responseData);
-      setData(responseData);
-      return responseData;
-
-    } catch (err) {
-      setError(err);
-      console.error("API Request failed:", err);
-      // We re-throw the error so the calling function can handle it if needed
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { data, error, loading, apiReq };
-};
 
 // Sample data for the "Load Sample Data" button
 const SAMPLE_DATA = {
@@ -359,7 +314,9 @@ const DataSubmissionSection = () => {
   const [csvFile, setCsvFile] = useState(null);
   const [csvFileName, setCsvFileName] = useState("");
   const [submittedJson, setSubmittedJson] = useState(null);
-  const { data, apiReq, loading: isLoading, csvType } = useApiData();
+  const {  apiReq, loading: isLoading, } = useApiData();
+  const [loadingMessage, setLoadingMessage] = useState("Analyzing your data...");
+  
 
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0];
@@ -475,6 +432,22 @@ const DataSubmissionSection = () => {
           features[key] = value;
           break;
       }
+
+       try {
+      setTimeout(() => {
+        setLoadingMessage("🔬 Running analysis...");
+      }, 1000);
+      
+      const response = await apiReq(url, payload);
+      console.log("API Response received:", response);
+      setSubmittedJson(response);
+    } catch (error) {
+      console.error("Error:", error);
+      setSubmittedJson({
+        error: "Failed to fetch. See console for details.",
+        message: error.message,
+      });
+    }
     }
 
     const payload = {
@@ -501,19 +474,34 @@ const DataSubmissionSection = () => {
     }
   };
 
-  const handleUploadSubmit = async () => {
+const handleUploadSubmit = async () => {
+  setLoadingMessage("🚀 Processing manual data...");
     if (!csvFile) {
       alert("Please select a CSV file");
       return;
     }
 
+    setLoadingMessage("🚀 Launching analysis...");
+    
     const formData = new FormData();
     formData.append("file", csvFile);
     formData.append("type", "csv");
     formData.append("data_type", csvDataType.toLowerCase());
 
     try {
-      // Remove trailing slash to match your server endpoint
+      // Update loading message during different phases
+      setTimeout(() => {
+        setLoadingMessage("📊 Processing CSV data...");
+      }, 1000);
+      
+      setTimeout(() => {
+        setLoadingMessage("🔬 Running ML predictions...");
+      }, 2500);
+      
+      setTimeout(() => {
+        setLoadingMessage("🌟 Finalizing results...");
+      }, 4000);
+
       const result = await apiReq("https://anweshak-exoplanet-hunting-tool-y8w5.onrender.com/predict/csv/", formData, csvDataType);
       setSubmittedJson(result);
       navigate("/response");
@@ -537,6 +525,10 @@ const DataSubmissionSection = () => {
   const isSubmitDisabled = (inputType === "csv" && !csvFile) || isLoading;
 
   return (
+  
+  <>
+  
+    <RocketLoader isVisible={isLoading} message={loadingMessage} />
     <section id="find-planet" className="py-20 bg-slate-900 min-h-screen">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-12">
@@ -787,7 +779,9 @@ const DataSubmissionSection = () => {
         </div>
       </div>
     </section>
+  </>
   );
 };
+
 
 export default DataSubmissionSection;
