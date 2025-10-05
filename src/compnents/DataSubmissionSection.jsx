@@ -486,7 +486,7 @@ const DataSubmissionSection = () => {
     console.log("JSON data to be sent:", JSON.stringify(payload, null, 2));
 
     const url =
-      "https://cutaneously-unliable-argentina.ngrok-free.dev/predict/manual/";
+      "https://cutaneously-unliable-argentina.ngrok-free.dev/predict/manual";
 
     try {
       const response = await apiReq(url, payload);
@@ -514,7 +514,7 @@ const DataSubmissionSection = () => {
 
     try {
       // Remove trailing slash to match your server endpoint
-      const result = await apiReq("https://fernanda-colloquial-semiallegorically.ngrok-free.dev/predict/demo", formData, csvDataType);
+      const result = await apiReq(" https://cutaneously-unliable-argentina.ngrok-free.dev/predict/csv/", formData, csvDataType);
       setSubmittedJson(result);
       navigate("/response");
     } catch (error) {

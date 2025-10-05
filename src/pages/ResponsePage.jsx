@@ -22,7 +22,7 @@ function ResponsePage() {
     }
   }, [isResponse, data, navigate]);
 
-  console.log(data);
+  console.log("Data",data);
   console.log(isResponse);
   console.log(csvType);
 

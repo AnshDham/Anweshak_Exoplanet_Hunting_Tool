@@ -27,9 +27,9 @@ const useApiData = create((set) => ({
                 throw new Error(result.message || `HTTP error! status: ${response.status}`);
             }
             
-            set({ data: result.data, isResponse: true });
+            set({ data: result, isResponse: true });
             set({ csvType: csvDataType });
-            console.log("Data stored in Zustand:", result);
+            console.log("Data stored in Zustand:", result.data);
             return result;
 
         } catch (error) {
