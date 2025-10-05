@@ -1,0 +1,222 @@
+# steps/dynamic_importer.py
+import pandas as pd 
+import json
+from zenml import step
+from typing import Tuple
+
+@step
+def dynamic_importer(model_type: str = "k2") -> Tuple[str, list]:
+    """
+    Dynamic importer that creates sample data for the specified model type
+    Returns JSON data and expected columns
+    """
+    if model_type == "k2":
+        data = {
+            'default_flag': [1, 0],
+            'sy_snum': [1, 1],
+            'sy_pnum': [1, 2],
+            'soltype': [1, 2],
+            'pl_controv_flag': [0, 0],
+            'pl_orbper': [10.5, 15.2],
+            'pl_orbpererr1': [0.1, 0.2],
+            'pl_orbpererr2': [-0.1, -0.2],
+            'pl_orbperlim': [10.4, 15.0],
+            'pl_rade': [1.5, 2.1],
+            'pl_radeerr1': [0.1, 0.15],
+            'pl_radeerr2': [-0.1, -0.15],
+            'pl_radelim': [1.4, 1.95],
+            'pl_radj': [1.6, 2.2],
+            'pl_radjerr1': [0.1, 0.16],
+            'pl_radjerr2': [-0.1, -0.16],
+            'pl_radjlim': [1.5, 2.04],
+            'ttv_flag': [0, 0],
+            'st_teff': [5800, 5200],
+            'st_tefferr1': [50, 45],
+            'st_tefferr2': [-50, -45],
+            'st_tefflim': [5750, 5155],
+            'st_rad': [1.1, 0.9],
+            'st_raderr1': [0.05, 0.04],
+            'st_raderr2': [-0.05, -0.04],
+            'st_radlim': [1.05, 0.86],
+            'st_logg': [4.4, 4.5],
+            'st_logglim': [4.35, 4.45],
+            'ra': [120.5, 130.2],
+            'dec': [15.3, 20.1],
+            'sy_dist': [150.2, 200.5],
+            'sy_disterr1': [5.1, 6.2],
+            'sy_disterr2': [-5.1, -6.2],
+            'sy_vmag': [12.3, 13.1],
+            'sy_vmagerr1': [0.1, 0.15],
+            'sy_vmagerr2': [-0.1, -0.15],
+            'sy_kmag': [11.2, 12.0],
+            'sy_kmagerr1': [0.08, 0.12],
+            'sy_kmagerr2': [-0.08, -0.12],
+            'sy_gaiamag': [12.1, 12.9],
+            'sy_gaiamagerr1': [0.09, 0.13],
+            'sy_gaiamagerr2': [-0.09, -0.13]
+        }
+        expected_columns = [
+            'default_flag', 'sy_snum', 'sy_pnum', 'soltype', 'pl_controv_flag', 
+            'pl_orbper', 'pl_orbpererr1', 'pl_orbpererr2', 'pl_orbperlim', 
+            'pl_rade', 'pl_radeerr1', 'pl_radeerr2', 'pl_radelim', 'pl_radj', 
+            'pl_radjerr1', 'pl_radjerr2', 'pl_radjlim', 'ttv_flag', 'st_teff', 
+            'st_tefferr1', 'st_tefferr2', 'st_tefflim', 'st_rad', 'st_raderr1', 
+            'st_raderr2', 'st_radlim', 'st_logg', 'st_logglim', 'ra', 'dec', 
+            'sy_dist', 'sy_disterr1', 'sy_disterr2', 'sy_vmag', 'sy_vmagerr1', 
+            'sy_vmagerr2', 'sy_kmag', 'sy_kmagerr1', 'sy_kmagerr2', 
+            'sy_gaiamag', 'sy_gaiamagerr1', 'sy_gaiamagerr2'
+        ]
+        
+    elif model_type == "koi":
+        data = {
+            'koi_pdisposition': [1, 0],
+            'koi_score': [0.85, 0.45],
+            'koi_fpflag_nt': [0, 1],
+            'koi_fpflag_ss': [0, 0],
+            'koi_fpflag_co': [0, 0],
+            'koi_fpflag_ec': [0, 1],
+            'koi_period': [25.3, 18.7],
+            'koi_period_err1': [0.3, 0.25],
+            'koi_period_err2': [-0.3, -0.25],
+            'koi_time0bk': [150.2, 145.8],
+            'koi_time0bk_err1': [0.5, 0.4],
+            'koi_time0bk_err2': [-0.5, -0.4],
+            'koi_impact': [0.15, 0.25],
+            'koi_impact_err1': [0.02, 0.03],
+            'koi_impact_err2': [-0.02, -0.03],
+            'koi_duration': [4.2, 3.8],
+            'koi_duration_err1': [0.1, 0.08],
+            'koi_duration_err2': [-0.1, -0.08],
+            'koi_depth': [250.5, 180.3],
+            'koi_depth_err1': [5.2, 4.1],
+            'koi_depth_err2': [-5.2, -4.1],
+            'koi_prad': [1.8, 1.2],
+            'koi_prad_err1': [0.1, 0.08],
+            'koi_prad_err2': [-0.1, -0.08],
+            'koi_teq': [850, 720],
+            'koi_insol': [1.2, 0.9],
+            'koi_insol_err1': [0.05, 0.04],
+            'koi_insol_err2': [-0.05, -0.04],
+            'koi_model_snr': [15.2, 8.7],
+            'koi_tce_plnt_num': [1, 1],
+            'koi_tce_delivname': [1, 2],
+            'koi_steff': [5800, 5200],
+            'koi_steff_err1': [50, 45],
+            'koi_steff_err2': [-50, -45],
+            'koi_slogg': [4.4, 4.5],
+            'koi_slogg_err1': [0.1, 0.08],
+            'koi_slogg_err2': [-0.1, -0.08],
+            'koi_srad': [1.1, 0.9],
+            'koi_srad_err1': [0.05, 0.04],
+            'koi_srad_err2': [-0.05, -0.04],
+            'ra': [120.5, 130.2],
+            'dec': [15.3, 20.1],
+            'koi_kepmag': [12.3, 13.1]
+        }
+        expected_columns = [
+            'koi_pdisposition', 'koi_score', 'koi_fpflag_nt', 'koi_fpflag_ss', 
+            'koi_fpflag_co', 'koi_fpflag_ec', 'koi_period', 'koi_period_err1', 
+            'koi_period_err2', 'koi_time0bk', 'koi_time0bk_err1', 
+            'koi_time0bk_err2', 'koi_impact', 'koi_impact_err1', 
+            'koi_impact_err2', 'koi_duration', 'koi_duration_err1', 
+            'koi_duration_err2', 'koi_depth', 'koi_depth_err1', 
+            'koi_depth_err2', 'koi_prad', 'koi_prad_err1', 'koi_prad_err2', 
+            'koi_teq', 'koi_insol', 'koi_insol_err1', 'koi_insol_err2', 
+            'koi_model_snr', 'koi_tce_plnt_num', 'koi_tce_delivname', 
+            'koi_steff', 'koi_steff_err1', 'koi_steff_err2', 'koi_slogg', 
+            'koi_slogg_err1', 'koi_slogg_err2', 'koi_srad', 'koi_srad_err1', 
+            'koi_srad_err2', 'ra', 'dec', 'koi_kepmag'
+        ]
+        
+    elif model_type == "tess":
+        data = {
+            'ra': [120.5, 130.2],
+            'dec': [15.3, 20.1],
+            'st_pmra': [10.2, -5.3],
+            'st_pmraerr1': [0.5, 0.4],
+            'st_pmraerr2': [-0.5, -0.4],
+            'st_pmralim': [9.7, -5.7],
+            'st_pmrasymerr': [0.5, 0.4],
+            'st_pmdec': [15.3, -8.2],
+            'st_pmdecerr1': [0.6, 0.5],
+            'st_pmdecerr2': [-0.6, -0.5],
+            'st_pmdeclim': [14.7, -8.7],
+            'st_pmdecsymerr': [0.6, 0.5],
+            'pl_tranmid': [1950.2, 1948.7],
+            'pl_tranmiderr1': [0.1, 0.08],
+            'pl_tranmiderr2': [-0.1, -0.08],
+            'pl_tranmidlim': [1950.1, 1948.62],
+            'pl_tranmidsymerr': [0.1, 0.08],
+            'pl_orbper': [12.5, 8.3],
+            'pl_orbpererr1': [0.2, 0.15],
+            'pl_orbpererr2': [-0.2, -0.15],
+            'pl_orbperlim': [12.3, 8.15],
+            'pl_orbpersymerr': [0.2, 0.15],
+            'pl_trandurh': [3.2, 2.8],
+            'pl_trandurherr1': [0.05, 0.04],
+            'pl_trandurherr2': [-0.05, -0.04],
+            'pl_trandurhlim': [3.15, 2.76],
+            'pl_trandurhsymerr': [0.05, 0.04],
+            'pl_trandep': [350.2, 280.5],
+            'pl_trandeperr1': [5.2, 4.1],
+            'pl_trandeperr2': [-5.2, -4.1],
+            'pl_trandeplim': [345.0, 276.4],
+            'pl_trandepsymerr': [5.2, 4.1],
+            'pl_rade': [1.6, 1.2],
+            'pl_radeerr1': [0.08, 0.06],
+            'pl_radeerr2': [-0.08, -0.06],
+            'pl_radelim': [1.52, 1.14],
+            'pl_radesymerr': [0.08, 0.06],
+            'pl_insol': [1.1, 0.8],
+            'pl_eqt': [820, 650],
+            'st_tmag': [10.2, 11.5],
+            'st_tmagerr1': [0.1, 0.12],
+            'st_tmagerr2': [-0.1, -0.12],
+            'st_tmaglim': [10.1, 11.38],
+            'st_tmagsymerr': [0.1, 0.12],
+            'st_dist': [150.2, 200.5],
+            'st_disterr1': [5.1, 6.2],
+            'st_disterr2': [-5.1, -6.2],
+            'st_distlim': [145.1, 194.3],
+            'st_distsymerr': [5.1, 6.2],
+            'st_teff': [5800, 5200],
+            'st_tefferr1': [50, 45],
+            'st_tefferr2': [-50, -45],
+            'st_tefflim': [5750, 5155],
+            'st_teffsymerr': [50, 45],
+            'st_logg': [4.4, 4.5],
+            'st_loggerr1': [0.1, 0.08],
+            'st_loggerr2': [-0.1, -0.08],
+            'st_logglim': [4.3, 4.42],
+            'st_loggsymerr': [0.1, 0.08],
+            'st_rad': [1.1, 0.9],
+            'st_raderr1': [0.05, 0.04],
+            'st_raderr2': [-0.05, -0.04],
+            'st_radlim': [1.05, 0.86],
+            'st_radsymerr': [0.05, 0.04]
+        }
+        expected_columns = [
+            'ra', 'dec', 'st_pmra', 'st_pmraerr1', 'st_pmraerr2', 'st_pmralim', 
+            'st_pmrasymerr', 'st_pmdec', 'st_pmdecerr1', 'st_pmdecerr2', 
+            'st_pmdeclim', 'st_pmdecsymerr', 'pl_tranmid', 'pl_tranmiderr1', 
+            'pl_tranmiderr2', 'pl_tranmidlim', 'pl_tranmidsymerr', 'pl_orbper', 
+            'pl_orbpererr1', 'pl_orbpererr2', 'pl_orbperlim', 'pl_orbpersymerr', 
+            'pl_trandurh', 'pl_trandurherr1', 'pl_trandurherr2', 'pl_trandurhlim', 
+            'pl_trandurhsymerr', 'pl_trandep', 'pl_trandeperr1', 'pl_trandeperr2', 
+            'pl_trandeplim', 'pl_trandepsymerr', 'pl_rade', 'pl_radeerr1', 
+            'pl_radeerr2', 'pl_radelim', 'pl_radesymerr', 'pl_insol', 'pl_eqt', 
+            'st_tmag', 'st_tmagerr1', 'st_tmagerr2', 'st_tmaglim', 
+            'st_tmagsymerr', 'st_dist', 'st_disterr1', 'st_disterr2', 
+            'st_distlim', 'st_distsymerr', 'st_teff', 'st_tefferr1', 
+            'st_tefferr2', 'st_tefflim', 'st_teffsymerr', 'st_logg', 
+            'st_loggerr1', 'st_loggerr2', 'st_logglim', 'st_loggsymerr', 
+            'st_rad', 'st_raderr1', 'st_raderr2', 'st_radlim', 'st_radsymerr'
+        ]
+    
+    else:
+        raise ValueError(f"Unknown model type: {model_type}. Use 'k2', 'koi', or 'tess'")
+    
+    df = pd.DataFrame(data)
+    json_data = df.to_json(orient="split")
+    
+    return json_data, expected_columns
